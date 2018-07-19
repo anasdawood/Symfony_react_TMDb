@@ -46,6 +46,18 @@ class MovieController extends Controller
     }
 
     /**
+     * @Route("/api/movie/dashDetails/{dashId}")
+     * @Method("GET")
+     */
+    public function getDashDetails($dashId)
+    {
+
+        $dash = $this->getDoctrine()->getRepository('AppBundle:Dashboard')->find($dashId);
+        $response = new JsonResponse($dash, 200);
+        return $response;
+    }
+
+    /**
      * @Route("/api/movie/dashboard/{dashId}")
      * @Method("GET")
      */
@@ -91,15 +103,13 @@ class MovieController extends Controller
         $em = $this->getDoctrine()->getManager();
         for ($i = 0; $i < 20; $i++) {
             $dashboard = new Dashboard();
+            $dashboard->setFav(false);
             if ($dash != null) {
                 for ($j = 0; $j < count($dash); $j++) {
                     if ($dash[$j]->getTmdbId() == $jsonRes->results[$i]->id) {
                         $dashboard->setId($dash[$j]->getId());
                         $dashboard->setFav($dash[$j]->getFav());
                         break;
-                    }
-                    else{
-                        $dashboard->setFav(false);
                     }
                 }
             }
@@ -110,6 +120,11 @@ class MovieController extends Controller
             $dashboard->setMovieDescription($jsonRes->results[$i]->overview);
             $dashboard->setRating($jsonRes->results[$i]->vote_average);
             $dashboard->setTmdbId($jsonRes->results[$i]->id);
+
+            $dashboard->setAdult($jsonRes->results[$i]->adult);
+            $genras = implode(",", $jsonRes->results[$i]->genre_ids);
+            $dashboard->setGenreIds($genras);
+
             $em->merge($dashboard);
         }
         $em->flush();

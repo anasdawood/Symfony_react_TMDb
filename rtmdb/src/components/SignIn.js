@@ -36,6 +36,7 @@ class SignIn extends Component {
     logIn(userData).
       then((res) => {
         if (res.status === 200) {
+          this.saveUserData({id:res.data.id,userName: res.data.userName});
           browserHistory.push("/app");
         }
         if (res.status === 404) {
@@ -44,7 +45,11 @@ class SignIn extends Component {
       }).catch((err) => {
         console.log(err)
       });
+  }
 
+  saveUserData(userResponse) {
+    if (userResponse.id != null && userResponse.userName != null)
+      localStorage.setItem("userData", JSON.stringify({ id: userResponse.id, userName: userResponse.userName }));
   }
 
   render() {

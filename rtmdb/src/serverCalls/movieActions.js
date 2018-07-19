@@ -16,10 +16,9 @@ export function addFav(dashId) {
         .catch(error => error.response);
 }
 
-export function addMovie(movieName, userId, userName) {
+export function getMovieDetails(dashId) {
     console.log("addMovie");
-    let request = { movieName: movieName, userId: userId, userName: userName };
-    return axios.post(`${server}/addMovie`, JSON.stringify(request), { mode: 'CORS' })
-        .then(resp => resp)
-        .catch(error => alert(error.response.data.message));
+    return axios.get(`${server}/dashDetails/${dashId}`, { mode: 'CORS' })
+        .then(resp => resp.data)
+        .catch(error => console.log(error));
 }

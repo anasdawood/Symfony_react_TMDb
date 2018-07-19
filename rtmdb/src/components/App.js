@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { getUserDashboard, addFav } from '../serverCalls/movieActions'
+import { getUserDashboard, addFav } from '../serverCalls/movieActions';
+import { browserHistory } from 'react-router';
 
 
 class App extends Component {
@@ -58,7 +59,17 @@ class App extends Component {
     });
   }
   getUserData() {
-    return localStorage.getItem("userData");
+    let userData = localStorage.getItem("userData");
+    if(userData == null)
+    {
+      browserHistory.push("/signin");
+    }
+    else{
+
+      return userData;
+
+    }
+    
   }
 
   render() {
@@ -103,7 +114,7 @@ class App extends Component {
             })}
           </tbody>
         </table>
-        {/* {<Link to="/create" className="btn btn-lg btn-success">+</Link>} */}
+        {/* <button onClick={this.getNextMovies.bind(this)} className="btn btn-default">Next</button> */}
       </div>
     );
   }

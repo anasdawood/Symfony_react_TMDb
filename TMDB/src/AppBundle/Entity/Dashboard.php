@@ -48,6 +48,22 @@ class Dashboard implements \JsonSerializable
      */
     private $fav;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="adult", type="boolean", nullable=true)
+     */
+    private $adult;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="genre_ids", type="string", length=45, nullable=true)
+     */
+    private $genreIds;
+
+
 
     /**
      * @var string
@@ -228,6 +244,38 @@ class Dashboard implements \JsonSerializable
         $this->user = $user;
     }
 
+    /**
+     * @return string
+     */
+    public function getAdult()
+    {
+        return $this->adult;
+    }
+
+    /**
+     * @param string $adult
+     */
+    public function setAdult($adult)
+    {
+        $this->adult = $adult;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGenreIds()
+    {
+        return $this->genreIds;
+    }
+
+    /**
+     * @param string $genreIds
+     */
+    public function setGenreIds($genreIds)
+    {
+        $this->genreIds = $genreIds;
+    }
+
     public function jsonSerialize()
     {
         return [
@@ -239,6 +287,8 @@ class Dashboard implements \JsonSerializable
             'lastUpdated'=>$this->lastUpdated,
             'rating'=>$this->rating,
             'tmdbId'=>$this->tmdbId,
+            'adult'=>$this->getAdult(),
+            'genreIds'=>$this->getGenreIds(),
             'user'=>$this->user
         ];
     }
