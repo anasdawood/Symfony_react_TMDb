@@ -1,79 +1,127 @@
 import React, { Component } from 'react';
-import { logIn } from '../serverCalls/userActions';
-import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
-import { logUser } from '../actions';
+import { Link } from 'react-router';
+import { getUserDashboard, addFav } from '../serverCalls/movieActions'
 
 
-class SignIn extends Component {
+class App extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: ''
+      movieName: '',
+      myDashboard: [],
+      originalDashboard: []
+    };
+  };
+
+  handleMovieNameChange(e) {
+    if (e.target.value === "") {
+      this.setState({ myDashboard: this.state.originalDashboard });
     }
-  }
-
-  handleEmailChange(e) {
     this.setState({
-      email: e.target.value
+      movieName: e.target.value
     });
-  }
-
-  handlePasswordChange(e) {
-
-    this.setState({
-      password: e.target.value
-    });
-
   }
 
   handleButtonClicked(e) {
-    var component = this;
-    e.preventDefault();
-    let userData = {
-      userName: this.state.email,
-      userPassword: this.state.password
-    };
-    logIn(userData).
-      then((res) => {
-        if (res.status === 200) {
-          component.props.dispatch(logUser(res.data));
-          browserHistory.push("/app");
-        }
-        if (res.status === 404) {
-          alert("User Not Found ");
-        }
-      }).catch((err) => {
-        console.log(err)
-      });
+    let myDashboard = this.state.myDashboard.filter((movie) => {
+      let name = this.state.movieName;
+      return movie.title.includes(name);
+    });
+    this.setState({ myDashboard: myDashboard });
+  }
 
+  // onDelete(id) {
+  //   deletemovieFromDashboard(id)
+  //     .then((data) => {
+  //       let myDashboard = this.state.myDashboard.filter((movie) => {
+  //         return id !== movie.id;
+  //       });
+
+  //       this.setState({ myDashboard: myDashboard });
+  //     })
+  //     .catch((err) => {
+  //       console.error('err', err);
+  //     });
+  // }
+
+  addFav(id, index) {
+    addFav(id)
+      .then((data) => {
+        let myDashboard = this.state.myDashboard;
+        myDashboard[index].fav = data.fav;
+        this.setState({ myDashboard: myDashboard });
+      })
+      .catch((err) => {
+        console.error('err', err);
+      });
+  }
+
+
+  componentDidMount() {
+    const userData = this.getUserData();
+    getUserDashboard(JSON.parse(userData).id).then((data) => {
+      this.setState({
+        myDashboard: data,
+        originalDashboard: data
+      });
+      console.log(this.state.myDashboard);
+    }
+    ).catch((err) => {
+      console.error('err', err);
+    });
+  }
+  getUserData() {
+    return localStorage.getItem("userData");
   }
 
   render() {
 
     return (
-      <div className="form-inline">
-        <h2>Sign In</h2>
-        <div className="form-group">
-          <input
-            value={this.state.email}
-            className="form-control" type="text" placeholder="E-mail" onChange={this.handleEmailChange.bind(this)} />
-          <input
-            value={this.state.password}
-            className="form-control" type="password" placeholder="Password" onChange={this.handlePasswordChange.bind(this)} />
-          <button
-            className="btn btn-primary" type="button" onClick={this.handleButtonClicked.bind(this)}> Sign In </button>
+      <div>
+        <div className="form-inline">
+          <div className="form-group">
+            <input
+              value={this.state.movieName}
+              className="form-control" type="text" placeholder="Movie Name" onChange={this.handleMovieNameChange.bind(this)} />
+            <button
+              className="btn btn-primary" type="button" onClick={this.handleButtonClicked.bind(this)}> Search Movie </button>
+          </div>
         </div>
+        <table className="table table-hover table-responsive">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>Title</th>
+              <th>Rating</th>
+              <th>Description</th>
+              <th>Cover</th>
+              <th>Fav</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.myDashboard && this.state.myDashboard.map((movie, i) => {
+              return (
+                <tr key={movie.id}>
+                  <td>{movie.id}</td>
+                  <td>{movie.title}</td>
+                  <td>{movie.rating}</td>
+                  <td>{movie.movieDescription}</td>
+                  <td><img src={`http://image.tmdb.org/t/p/w185${movie.coverImage}`} /></td>
+                  <td><img style={{ width: '50px', height: '50px' }} src={`../../${movie.fav}.png`} /></td>
+                  <td>
+                    <Link to={`/movie/details/${movie.id}`} className="btn btn-default btn-sm">Details</Link>
+                    {/* <button onClick={this.onDelete.bind(this, movie.id)} className="btn btn-danger btn-sm">Delete</button> */}
+                    <button onClick={this.addFav.bind(this, movie.id, i)} className="btn btn-danger btn-sm">+</button>
+                  </td>
+                </tr>);
+            })}
+          </tbody>
+        </table>
+        {/* {<Link to="/create" className="btn btn-lg btn-success">+</Link>} */}
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-
-  const { email } = state;
-  return { email }
-}
-
-export default connect(mapStateToProps, null)(SignIn);
+export default App;
