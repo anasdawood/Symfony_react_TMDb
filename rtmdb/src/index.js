@@ -18,7 +18,7 @@ ReactDOM.render(
         <Route path="/signup" component={withRouter(SignUp)} />
         <Route path="/signin" component={withRouter(SignIn)} />
         <Route path="/create" component={withRouter(Create)} />
-        {/* <Route path="/city/details/:dashId" component={withRouter(Details)} /> */}
+        <Route path="/movie/details/:dashId" component={withRouter(Details)} />
         <Route path="*" component={NotFoundPage} />
     </Router>
     , document.getElementById('root'));

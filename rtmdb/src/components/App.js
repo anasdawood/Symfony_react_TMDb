@@ -31,20 +31,6 @@ class App extends Component {
     this.setState({ myDashboard: myDashboard });
   }
 
-  // onDelete(id) {
-  //   deletemovieFromDashboard(id)
-  //     .then((data) => {
-  //       let myDashboard = this.state.myDashboard.filter((movie) => {
-  //         return id !== movie.id;
-  //       });
-
-  //       this.setState({ myDashboard: myDashboard });
-  //     })
-  //     .catch((err) => {
-  //       console.error('err', err);
-  //     });
-  // }
-
   addFav(id, index) {
     addFav(id)
       .then((data) => {
@@ -111,7 +97,6 @@ class App extends Component {
                   <td><img style={{ width: '50px', height: '50px' }} src={`../../${movie.fav}.png`} /></td>
                   <td>
                     <Link to={`/movie/details/${movie.id}`} className="btn btn-default btn-sm">Details</Link>
-                    {/* <button onClick={this.onDelete.bind(this, movie.id)} className="btn btn-danger btn-sm">Delete</button> */}
                     <button onClick={this.addFav.bind(this, movie.id, i)} className="btn btn-danger btn-sm">+</button>
                   </td>
                 </tr>);
