@@ -4,7 +4,7 @@ Thie application uses Symfony to read data from The movie DB API and store it in
 
 ## Getting Started
 
-1- Donload both Folders.
+1- Dwonload both Folders.
 2- TMBD is the Symfony project.
 3- rtmbd is the React part of this project.
 
