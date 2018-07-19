@@ -120,7 +120,6 @@ class MovieController extends Controller
             $dashboard->setMovieDescription($jsonRes->results[$i]->overview);
             $dashboard->setRating($jsonRes->results[$i]->vote_average);
             $dashboard->setTmdbId($jsonRes->results[$i]->id);
-
             $dashboard->setAdult($jsonRes->results[$i]->adult);
             $genras = implode(",", $jsonRes->results[$i]->genre_ids);
             $dashboard->setGenreIds($genras);

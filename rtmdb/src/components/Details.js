@@ -8,45 +8,46 @@ class Details extends Component {
     super(props);
     this.state = {
       details: [],
-      genre: []
+      allGenre: {
+        28: "Action",
+        12: "Adventure",
+        16: "Animation",
+        35: "Comedy",
+        80: "Crime",
+        99: "Documentary",
+        18: "Drama",
+        10751: "Family",
+        14: "Fantasy",
+        36: "History",
+        27: "Horror",
+        10402: "Music",
+        9648: "Mystery",
+        10749: "Romance",
+        878: "Science Fiction",
+        10770: "TV Movie",
+        53: "Thriller",
+        10752: "War",
+        37: "Western"
+      },
+      userGenre: ""
     };
   };
 
   componentDidMount() {
-    this.populateGenres();
     let userData = this.getUserData();
     getMovieDetails(this.props.params.dashId
     ).then((data) => {
       this.setState({ details: data });
-      console.log(this.state.genres);
+      var res = this.state.details.genreIds.split(",");
+      let userGenre = "";
+      for (var i = 0; i < res.length; i++) {
+        userGenre += this.state.allGenre[res[i]]+",";
+      }
+      this.setState({ userGenre: userGenre });
     })
       .catch((err) => {
         console.error('err', err);
       });
-  }
-
-  populateGenres() {
-    this.state.genres = {
-      28: "Action",
-      12: "Adventure",
-      16: "Animation",
-      35: "Comedy",
-      80: "Crime",
-      99: "Documentary",
-      18: "Drama",
-      10751: "Family",
-      14: "Fantasy",
-      36: "History",
-      27: "Horror",
-      10402: "Music",
-      9648: "Mystery",
-      10749: "Romance",
-      878: "Science Fiction",
-      10770: "TV Movie",
-      53: "Thriller",
-      10752: "War",
-      37: "Western"
-    }
   }
 
   getUserData() {
@@ -69,7 +70,6 @@ class Details extends Component {
   render() {
 
     return (
-
       <div className="container">
         <div className="row">
           <div className="col-sm-9">
@@ -80,7 +80,7 @@ class Details extends Component {
             <label className="label label-default">{String(this.state.details.adult)}</label>
             <br />
             <label >Genre: </label>
-            <label className="label label-default">{this.state.details.genreIds}</label>
+            <label className="label label-default">{this.state.userGenre}</label>
             <br />
             <label >Rating: </label>
             <label className="label label-default">{this.state.details.rating * 10}%</label>
@@ -90,9 +90,6 @@ class Details extends Component {
           </div>
         </div>
       </div>
-
-
-
     );
   }
 }
